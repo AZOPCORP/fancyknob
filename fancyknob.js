@@ -87,8 +87,8 @@
                 };
                 var a, b, deg, tmp,
                     rad2deg = 180 / Math.PI;
-                doc.on('mousemove.rem', function(e) {
-                    a = center.y - e.pageY;
+                doc.on('mousemove.rem ', function(e) {
+                    a = center.y - e.pageY ;
                     b = center.x - e.pageX;
                     deg = Math.atan2(a, b) * rad2deg;
                     if (deg < 0) {
@@ -114,6 +114,50 @@
                     lastDeg = tmp;
                 });
                 doc.on('mouseup.rem', function() {
+                    knob.off('.rem');
+                    doc.off('.rem');
+                    rotation = currentDeg;
+                    startDeg = -1;
+                });
+            });
+            knob.on('touchstart', function(e) {
+
+                e.preventDefault();
+
+                var offset = $(this).offset();
+                var center = {
+                    y: offset.top + knob.height() / 2,
+                    x: offset.left + knob.width() / 2
+                };
+                var a, b, deg, tmp,
+                    rad2deg = 180 / Math.PI;
+                doc.on('touchmove.rem ', function(e) {
+                    a = center.y - e.originalEvent.touches[0].pageY ;
+                    b = center.x - e.originalEvent.touches[0].pageX;
+                    deg = Math.atan2(a, b) * rad2deg;
+                    if (deg < 0) {
+                        deg = 360 + deg;
+                    }
+                    if (startDeg == -1) {
+                        startDeg = deg;
+                    }
+                    tmp = Math.floor((deg - startDeg) + rotation);
+                    if (tmp < 0) {
+                        tmp = 360 + tmp;
+                    } else if (tmp > 280) {
+                        tmp = tmp % 360;
+                    }
+                    if (Math.abs(tmp - lastDeg) > 180) {
+                        return false;
+                    }
+                    angle = tmp;
+                    if (angle > maxangle) {
+                        angle = maxangle
+                    }
+                    setAngle(knob.parent(), true)
+                    lastDeg = tmp;
+                });
+                doc.on('touchend.rem', function() {
                     knob.off('.rem');
                     doc.off('.rem');
                     rotation = currentDeg;
