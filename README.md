@@ -26,3 +26,4 @@ based on [https://codepen.io/blucube/pen/cudAz](https://codepen.io/blucube/pen/c
 
 if you set up negative minimal value of the input range the knob will split in 2 halfes and the zero will be set in the middle. 
 (usefull for pan control)
+set label name using data-label="my label"
