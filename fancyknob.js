@@ -2,22 +2,26 @@
     $.fn.fancyknob = function(options) {
         return this.each(function() {
             $(this).hide()
-            $('<div class="knob-surround"><div class="knob"></div><div class="ticks"><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div></div></div>').insertAfter($(this));
+            $('<div class="knob-surround"><div class="knob"></div><div class="ticks"><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div></div><div class="knoblabel"></div><div class="knobvalue"></div></div>').insertAfter($(this));
             var angle = 0,
                 minangle = 0,
                 maxangle = 280,
-                minval = $(this).prop('min'),
-                maxval = $(this).prop('max'),
+                rangeelem = $(this),
+                minval = parseFloat($(this).prop('min')),
+                maxval = parseFloat($(this).prop('max')),
                 knob = $(this).next().find('.knob'),
                 doc = $(document),
+                step = parseFloat($(this).prop('step')) || 1.0,
                 a, b, deg, tmp,
                 rad2deg = 180 / Math.PI,
                 startDeg = -1,
                 currentDeg = 0,
                 rotation = 0,
                 lastDeg = 0;
+            $(this).next().find(".knoblabel").html($(this).data("label"))
 
             $(this).on("input change", function() {
+              $(this).next().find(".knobvalue").html($(this).val())
                 if (minval < 0) {
                     if (parseInt($(this).val()) < 0) {
                         var i = Math.abs(minval) + parseInt($(this).val());
@@ -37,27 +41,42 @@
                     if (angle <= maxangle) {
                         if (mode) {
                             angle = angle + 10
+                            setAngle(elem, true);
                         } else {
-                            angle = angle + 1;
+                            var t = parseFloat(rangeelem.val()) + step;
+                            if (t <= minval) {
+                                t = minval
+                            } else if (t >= maxval) {
+                                t = maxval
+                            }
+                            rangeelem.val(t).trigger('change')
                         }
                         if (angle >= maxangle) {
                             angle = maxangle;
+                            setAngle(elem, true);
                         }
                     }
-                    setAngle(elem, true);
                 } else if (direction == 'down') {
                     if ((angle) >= minangle) {
                         if (mode) {
                             angle = angle - 10;
+                            setAngle(elem, true);
                         } else {
-                            angle = angle - 1;
+                            var t = parseFloat(rangeelem.val()) - step;
+                            if (t <= minval) {
+                                t = minval
+                            } else if (t >= maxval) {
+                                t = maxval
+                            }
+                            rangeelem.val(t).trigger('change')
                         }
                         if (angle <= minangle) {
                             angle = minangle;
+                            setAngle(elem, true);
                         }
                     }
                 }
-                setAngle(elem, true);
+
             }
             $(this).next().bind('DOMMouseScroll', function(e) {
 
@@ -88,7 +107,7 @@
                 var a, b, deg, tmp,
                     rad2deg = 180 / Math.PI;
                 doc.on('mousemove.rem ', function(e) {
-                    a = center.y - e.pageY ;
+                    a = center.y - e.pageY;
                     b = center.x - e.pageX;
                     deg = Math.atan2(a, b) * rad2deg;
                     if (deg < 0) {
@@ -132,7 +151,7 @@
                 var a, b, deg, tmp,
                     rad2deg = 180 / Math.PI;
                 doc.on('touchmove.rem ', function(e) {
-                    a = center.y - e.originalEvent.touches[0].pageY ;
+                    a = center.y - e.originalEvent.touches[0].pageY;
                     b = center.x - e.originalEvent.touches[0].pageX;
                     deg = Math.atan2(a, b) * rad2deg;
                     if (deg < 0) {
@@ -164,6 +183,7 @@
                     startDeg = -1;
                 });
             });
+
             function setAngle(elem, mode) {
                 elem.find('.knob').css({
                     '-moz-transform': 'rotate(' + angle + 'deg)',
@@ -218,6 +238,7 @@
                         pc = Math.round((angle / 280) * maxval);
                     }
                     elem.prev().val(pc);
+                    elem.find(".knobvalue").html(pc)
                 }
             }
             $(this).trigger('change')
