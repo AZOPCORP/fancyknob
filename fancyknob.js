@@ -17,9 +17,13 @@
                 startDeg = -1,
                 currentDeg = 0,
                 rotation = 0,
-                lastDeg = 0;
+                lastDeg = 0,
+                decimal_digits=0,
+                x_str = step.toString().split('.')[1];
+                if(x_str!=undefined){
+                   decimal_digits = x_str.length;
+                }
             $(this).next().find(".knoblabel").html($(this).data("label"))
-
             $(this).on("input change", function() {
               $(this).next().find(".knobvalue").html($(this).val())
                 if (minval < 0) {
@@ -227,21 +231,25 @@
                 if (mode) {
                     if (minval < 0) {
                         if (angle < 140) {
-                            pc = Math.round((angle / 140) * Math.abs(minval));
+                            pc = (angle / 140) * Math.abs(minval);
                             pc = parseInt(minval) + Math.abs(pc)
+                            
                         } else if (angle > 140) {
-                            pc = (Math.round((angle / 140) * maxval) - parseInt(maxval));
+                            pc = ((angle / 140) * maxval) - parseInt(maxval);
+                          
                         } else {
                             pc = 0;
                         }
                     } else {
-                        pc = Math.round((angle / 280) * maxval);
+                        pc = (angle / 280) * maxval;
                     }
-                    elem.prev().val(pc);
-                    elem.find(".knobvalue").html(pc)
+                    elem.prev().val(pc.toFixed(decimal_digits));
+                    elem.find(".knobvalue").html(pc.toFixed(decimal_digits))
                 }
             }
             $(this).trigger('change')
         })
     };
 }(jQuery));
+
+
