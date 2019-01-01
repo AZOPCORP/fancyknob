@@ -1,5 +1,11 @@
 (function($) {
-    $.fn.fancyknob = function(options) {
+    $.fn.fancyknob = function(props) {
+        
+        // take a function to return the current value of the knob
+        var options = $.extend({
+            trun: function(){}
+        }, props || {});
+        
         return this.each(function() {
             $(this).hide();
             $('<div class="knob-surround"><div class="knob"></div><div class="ticks"><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div><div class="tick"></div></div><div class="knoblabel"></div><div class="knobvalue"></div></div>').insertAfter($(this));
@@ -38,6 +44,9 @@
                     angle = Math.round(($(this).val() / maxval) * 280);
                 }
                 setAngle($(this).next(), false);
+                currentDeg = angle;
+                lastDeg = angle;
+                rotation = currentDeg;
             });
 
             function moveKnob(direction, elem, mode) {
@@ -134,6 +143,7 @@
                         angle = maxangle;
                     }
                     setAngle(knob.parent(), true);
+                    currentDeg = tmp;
                     lastDeg = tmp;
                 });
                 doc.on('mouseup.rem', function() {
@@ -177,6 +187,7 @@
                         angle = maxangle;
                     }
                     setAngle(knob.parent(), true);
+                    currentDeg = tmp;
                     lastDeg = tmp;
                 });
                 doc.on('touchend.rem', function() {
@@ -243,6 +254,8 @@
                     }
                     elem.prev().val(pc.toFixed(decimal_digits));
                     elem.find(".knobvalue").html(pc.toFixed(decimal_digits));
+                    // return the value to the function turn
+                    options.turn(pc.toFixed(decimal_digits));
                 }
             }
             $(this).trigger('change');
