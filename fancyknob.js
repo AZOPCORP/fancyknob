@@ -44,6 +44,7 @@
                     angle = Math.round(($(this).val() / maxval) * 280);
                 }
                 setAngle($(this).next(), false);
+                // save the current angle after input or change
                 currentDeg = angle;
                 lastDeg = angle;
                 rotation = currentDeg;
@@ -112,7 +113,8 @@
 
                 e.preventDefault();
 
-                var offset = $(this).offset();
+                // not appropriate to use $(this).offset as the offset change when $(this) rotated
+                var offset = $(this).parent(".knob-surround").offset()
                 var center = {
                     y: offset.top + knob.height() / 2,
                     x: offset.left + knob.width() / 2
@@ -157,7 +159,8 @@
 
                 e.preventDefault();
 
-                var offset = $(this).offset();
+                // not appropriate to use $(this).offset as the offset change when $(this) rotated
+                var offset = $(this).parent(".knob-surround").offset()
                 var center = {
                     y: offset.top + knob.height() / 2,
                     x: offset.left + knob.width() / 2
