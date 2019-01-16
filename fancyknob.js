@@ -3,7 +3,7 @@
         
         // take a function to return the current value of the knob
         var options = $.extend({
-            trun: function(){}
+            turn: function(){}
         }, props || {});
         
         return this.each(function() {
