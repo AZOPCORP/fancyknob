@@ -35,8 +35,9 @@ set label name using data-label="my label"
 set precise value using mouse well
 
 call turn to return the current value (in integer) of the knob:
-
+```javascript
 $('.your-range-input-class').fancyknob({ turn: function(currentValue){
                                           // your code
-                                        }
-                                       });
+                                          }
+                                        });
+```
